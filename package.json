@@ -1,0 +1,21 @@
+{
+  "name": "silence-log",
+  "version": "0.0.0",
+  "description": "",
+  "author": {
+    "name": "Francois A.R. Vilain",
+    "email": "far.vilain@gmail.com"
+  },
+  "license": "All Right Reserved",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:farvilain/silence-log.git"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5"
+  }
+}

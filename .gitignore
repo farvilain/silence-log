@@ -1,0 +1,6 @@
+/node_modules/
+/npm-debug.log
+/perso/
+/app-cov/
+/lib-cov/
+/config.js
