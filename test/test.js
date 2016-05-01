@@ -171,5 +171,16 @@ describe("Logger", function(){
 
 			assert.strictEqual(1, info.log.callCount);
 		});
+
+		it("emit error event if something wrong", function(){
+			var info = { log : 3 };
+			var logger = new Logger("parent");
+			var errorHandler = sinon.spy();
+			logger.addAppender("info", info);
+			logger.once("error",errorHandler);
+			logger.info();
+
+			assert.strictEqual(1,errorHandler.callCount);
+		});
 	});	
 });
