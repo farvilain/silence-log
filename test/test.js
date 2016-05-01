@@ -1,11 +1,6 @@
 var assert = require('assert');
+var sinon = require('sinon');
 var Logger = require('../lib/Logger');
-
-function mock (){
-	var mock = { count : 0 };
-	mock.log = function() { mock.count++ };
-	return mock;
-}
 
 describe("Logger", function(){
 	describe("constructor", function(){
@@ -109,38 +104,50 @@ describe("Logger", function(){
 	describe("log", function(){
 
 		describe("call", function(){
-			var debug = mock();
-			var info = mock();
-			var error = mock();
-			var log = new Logger("");
+			var debug = { log : sinon.spy() };
+			var info = { log : sinon.spy() };
+			var error = { log : sinon.spy() };
+			var log = new Logger("loggername");
 			log.addAppender("info",info);
 			log.addAppender("error",error);
 			log.addAppender("debug",debug);
-			log.info();
-			log.info();
+			log.info("msg",10);
 
 			it("exact level", function(){
-				assert.strictEqual(2, info.count);
+				assert.strictEqual(1, info.log.callCount);
 			});
 
 			it("lower level", function(){
-				assert.strictEqual(2, debug.count);
+				assert.strictEqual(1, debug.log.callCount);
 			});
 
 			it("never higher level", function(){
-				assert.strictEqual(0, error.count);
+				assert.strictEqual(0, error.log.callCount);
+			});
+
+			it("first arg is loggerName", function(){
+				assert.strictEqual("loggername", info.log.getCall(0).args[0]);
+			});
+
+			it("second arg is logLevel", function(){
+				assert.strictEqual("info", info.log.getCall(0).args[1]);
+			});
+
+			it("others args are gived", function(){
+				assert.strictEqual("msg", info.log.getCall(0).args[2]);
+				assert.strictEqual(10, info.log.getCall(0).args[3]);
 			});
 		});
 
 		it("don't call twice the same logger on different level", function(){
-			var info = mock();
+			var info = { log : sinon.spy() };
 			var parent = new Logger("parent");
 			parent.addAppender("info", info);
 			var log = new Logger("test", parent);
 			log.addAppender("info",info);
 			log.info();
 
-			assert.strictEqual(1, info.count);
+			assert.strictEqual(1, info.log.callCount);
 		});
 	});	
 });
