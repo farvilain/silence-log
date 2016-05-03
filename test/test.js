@@ -126,9 +126,9 @@ describe("Logger", function(){
 	describe("log", function(){
 
 		describe("call", function(){
-			var debug = { log : sinon.spy() };
-			var info = { log : sinon.spy() };
-			var error = { log : sinon.spy() };
+			var debug = sinon.spy();
+			var info = sinon.spy();
+			var error = sinon.spy();
 			var log = new Logger("loggername");
 			log.addAppender("info",info);
 			log.addAppender("error",error);
@@ -136,44 +136,44 @@ describe("Logger", function(){
 			log.info("msg",10);
 
 			it("exact level", function(){
-				assert.strictEqual(1, info.log.callCount);
+				assert.strictEqual(1, info.callCount);
 			});
 
 			it("lower level", function(){
-				assert.strictEqual(1, debug.log.callCount);
+				assert.strictEqual(1, debug.callCount);
 			});
 
 			it("never higher level", function(){
-				assert.strictEqual(0, error.log.callCount);
+				assert.strictEqual(0, error.callCount);
 			});
 
 			it("first arg is loggerName", function(){
-				assert.strictEqual("loggername", info.log.getCall(0).args[0]);
+				assert.strictEqual("loggername", info.getCall(0).args[0]);
 			});
 
 			it("second arg is logLevel", function(){
-				assert.strictEqual("info", info.log.getCall(0).args[1]);
+				assert.strictEqual("info", info.getCall(0).args[1]);
 			});
 
 			it("others args are gived", function(){
-				assert.strictEqual("msg", info.log.getCall(0).args[2]);
-				assert.strictEqual(10, info.log.getCall(0).args[3]);
+				assert.strictEqual("msg", info.getCall(0).args[2]);
+				assert.strictEqual(10, info.getCall(0).args[3]);
 			});
 		});
 
 		it("don't call twice the same logger on different level", function(){
-			var info = { log : sinon.spy() };
+			var info = sinon.spy();
 			var parent = new Logger("parent");
 			parent.addAppender("info", info);
 			var log = new Logger("test", parent);
 			log.addAppender("info",info);
 			log.info();
 
-			assert.strictEqual(1, info.log.callCount);
+			assert.strictEqual(1, info.callCount);
 		});
 
 		it("emit error event if something wrong", function(){
-			var info = { log : 3 };
+			var info = 3 ;
 			var logger = new Logger("parent");
 			var errorHandler = sinon.spy();
 			logger.addAppender("info", info);
