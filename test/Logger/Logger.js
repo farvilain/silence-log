@@ -1,9 +1,9 @@
 var assert = require('assert');
 var sinon = require('sinon');
-var Logger = require('../lib/Logger');
+var Logger = require('../../lib/Logger');
 
-describe("Logger", function(){
-	describe("constructor", function(){
+describe("Logger.new", function(){
+	describe("without parent", function(){
 		it("works", function(){
 			var l = new Logger("paf");
 			assert.ok(l);
@@ -26,7 +26,7 @@ describe("Logger", function(){
 		});
 	});
 
-	describe("constructor with parent", function(){
+	describe("with parent", function(){
 		var parent = new Logger("null");
 		parent.appenders = {
 			"ha" : [1,2],
@@ -54,133 +54,4 @@ describe("Logger", function(){
 			assert.deepEqual({"ha":[1,2], "b":[2,4]}, l.appenders);
 		});
 	});
-
-	describe("addAppender", function(){
-
-		describe("that already exists", function(){
-			var parent = new Logger("null");
-			parent.appenders = {"info" : [1,2,3]};
-			var child = new Logger("paf", parent);
-
-			parent.addAppender("info", 3);
-
-			it("don't add on logger", function(){
-				assert.deepEqual([1,2,3], parent.appenders.info);
-			});
-			it("don't add on children", function(){
-				assert.deepEqual([1,2,3], child.appenders.info);
-			});
-		});
-
-		describe("that already exists on a lower level", function(){
-			var log = new Logger("null");
-			log.addAppender("debug",1);
-			log.addAppender("info", 1);
-
-			it("is now on the good level", function(){
-				assert.deepEqual([1], log.appenders.info);
-			});
-			it("is not removed from the old one", function(){
-				assert.deepEqual([1], log.appenders.debug);
-			});
-		});
-
-		describe("that already exists on a higher level", function(){
-			var log = new Logger("null");
-			log.addAppender("error",1);
-			log.addAppender("info", 1);
-
-			it("is now on the good level", function(){
-				assert.deepEqual([1], log.appenders.info);
-			});
-			it("is not removed from the old one", function(){
-				assert.deepEqual([1], log.appenders.error);
-			});
-		});
-
-		describe("that do not already exist", function(){
-			var parent = new Logger("null");
-			var child = new Logger("paf", parent);
-
-			parent.addAppender("info", 3);
-
-			it("add on logger", function(){
-				assert.deepEqual([3], parent.appenders.info);
-			});
-			it("add on higher logger", function(){
-				assert.deepEqual([3], parent.appenders.warn);
-				assert.deepEqual([3], parent.appenders.error);
-			});
-
-			it("don't add on lower logger", function(){
-				assert.strictEqual(undefined, parent.appenders.debug);
-				assert.strictEqual(undefined, parent.appenders.trace);
-			});
-
-			it("add on children", function(){
-				assert.deepEqual([3], child.appenders.info);
-			});
-		});
-	});	
-
-	describe("log", function(){
-
-		describe("call", function(){
-			var debug = sinon.spy();
-			var info = sinon.spy();
-			var error = sinon.spy();
-			var log = new Logger("loggername");
-			log.addAppender("info",info);
-			log.addAppender("error",error);
-			log.addAppender("debug",debug);
-			log.info("msg",10);
-
-			it("exact level", function(){
-				assert.strictEqual(1, info.callCount);
-			});
-
-			it("lower level", function(){
-				assert.strictEqual(1, debug.callCount);
-			});
-
-			it("never higher level", function(){
-				assert.strictEqual(0, error.callCount);
-			});
-
-			it("first arg is loggerName", function(){
-				assert.strictEqual("loggername", info.getCall(0).args[0]);
-			});
-
-			it("second arg is logLevel", function(){
-				assert.strictEqual("info", info.getCall(0).args[1]);
-			});
-
-			it("others args are gived", function(){
-				assert.strictEqual("msg", info.getCall(0).args[2]);
-				assert.strictEqual(10, info.getCall(0).args[3]);
-			});
-		});
-
-		it("don't call twice the same logger on different level", function(){
-			var info = sinon.spy();
-			var parent = new Logger("parent");
-			parent.addAppender("info", info);
-			var log = new Logger("test", parent);
-			log.addAppender("info",info);
-			log.info();
-
-			assert.strictEqual(1, info.callCount);
-		});
-
-		it("emit error event if something wrong", function(){
-			var info = 3 ;
-			var logger = new Logger("parent");
-			var errorHandler = sinon.spy();
-			logger.addAppender("info", info);
-			logger.once("error",errorHandler);
-			logger.info();
-
-			assert.strictEqual(1,errorHandler.callCount);
-		});
-	});	
 });
