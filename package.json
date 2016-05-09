@@ -9,7 +9,7 @@
   "license": "All Right Reserved",
   "repository": {
     "type": "git",
-    "url": "git@github.com:farvilain/silence-log.git"
+    "url": "git://github.com/farvilain/silence-log.git"
   },
   "main": "lib/index.js",
   "scripts": {
