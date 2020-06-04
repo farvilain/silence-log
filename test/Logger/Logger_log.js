@@ -7,7 +7,8 @@ describe("Logger.log", function(){
 		var debug = sinon.spy();
 		var info = sinon.spy();
 		var error = sinon.spy();
-		var log = new Logger("loggername");
+		var app = {};
+		var log = new Logger("loggername", null, app);
 		log.addAppender("info",info);
 		log.addAppender("error",error);
 		log.addAppender("debug",debug);
@@ -25,17 +26,21 @@ describe("Logger.log", function(){
 			assert.strictEqual(0, error.callCount);
 		});
 
-		it("first arg is loggerName", function(){
-			assert.strictEqual("loggername", info.getCall(0).args[0]);
+		it("first arg is app", function(){
+			assert.strictEqual(app, info.getCall(0).args[0]);
 		});
 
-		it("second arg is logLevel", function(){
-			assert.strictEqual("info", info.getCall(0).args[1]);
+		it("second arg is loggerName", function(){
+			assert.strictEqual("loggername", info.getCall(0).args[1]);
+		});
+
+		it("third arg is logLevel", function(){
+			assert.strictEqual("info", info.getCall(0).args[2]);
 		});
 
 		it("others args are gived", function(){
-			assert.strictEqual("msg", info.getCall(0).args[2]);
-			assert.strictEqual(10, info.getCall(0).args[3]);
+			assert.strictEqual("msg", info.getCall(0).args[3]);
+			assert.strictEqual(10, info.getCall(0).args[4]);
 		});
 	});
 
