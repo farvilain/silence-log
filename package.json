@@ -1,6 +1,6 @@
 {
   "name": "silence-log",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Agnostic logger factory to unify them all, without any Sauron",
   "author": {
     "name": "Francois A.R. Vilain",
