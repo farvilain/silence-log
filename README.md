@@ -32,7 +32,9 @@ After installing `npm install --save silence-log`, you can just do this kind of 
 ```javascript
 
 var engineLogger = require('silence-log').get("pegasus.engine");
-
+engineLogger.app({
+	name: 'MyApp'
+});
 engineLogger.warn("engine overheating");
 
 ```
@@ -64,8 +66,8 @@ The easy way is to create a `log.js` file and require it in the first line of yo
 
 var factory = require('silence-log');
 
-function consoleAppender(loggerName, level, msg){
-	console.log("[" + level + "]", loggerName, "::", msg);
+function consoleAppender(app, loggerName, level, msg){
+	console.log(`${level.toUpperCase().padStart(6, ' ')} [${app.name}] ${loggerName} :: ${msg}`);
 }
 
 //Define the root logger appender (and any child) on debug, so for [error, warrn, info, debug] but not trace
