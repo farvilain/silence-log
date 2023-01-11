@@ -16,7 +16,7 @@
     "test": "mocha test --recursive -R spec"
   },
   "devDependencies": {
-    "mocha": "^2.4.5",
+    "mocha": "^10.2.0",
     "sinon": "^1.17.3"
   }
 }
